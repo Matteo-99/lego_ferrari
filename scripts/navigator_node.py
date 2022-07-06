@@ -181,6 +181,8 @@ class Move2Goal:
                 if abs(psi) > self.cmd_max_angle:
                     psi = np.sign(psi) * self.cmd_max_angle
 
+                if abs(v) > self.max_speed:
+                    v = np.sign(v) * self.max_speed
                 cmd_v = PID_vel.calc_control(v)
 
                 return cmd_v, psi
@@ -244,7 +246,8 @@ if __name__ == '__main__':
         controller = PathFinderController(k_rho, k_alpha, k_beta)
 
         k_v = rospy.get_param("/k_v", 30)
-        PID_vel = PIDcontroller(k_v, cmd_max_velocity, cmd_min_move)
+        k_i = rospy.get_param("/k_i", 30)
+        PID_vel = PIDcontroller(k_v, k_i, dt, cmd_max_velocity, cmd_min_move)
     	
         fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
         nav = Move2Goal(tolerance, cmd_max_velocity, cmd_max_angle, max_velocity, 
