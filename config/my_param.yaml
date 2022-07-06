@@ -1,0 +1,40 @@
+# Command limits
+cmd_max_velocity: 256       # max velocity [0-256], max duty cycle of the PWM controlling the DC motor
+cmd_max_angle: 70           # max servo angle [deg]
+cmd_max_turn: 20            # max angle step for the servo at each execution [deg] 
+cmd_max_acc_step: 1         # max acceleration step at each execution
+cmd_max_dec_step: 4         # max deceleration step at each execution
+cmd_start_acc_step: 20      # initial velocity step
+cmd_min_move: 44            # minimum value of velocity for which the car starts moving
+cmd_zero_speed_tol: 3       # maximum velocity approximated to 0
+inertia_stop_step: 15        # simulated step of the stop by inertia (driver in High impedance mode)
+
+# Move2Goal parameters
+tolerance: 0.2    # meters 
+k_rho: 6        # velocity gain
+k_alpha: 40        # steering angle gain
+k_beta: 15         # smooth rotations
+
+# Velocity controller
+k_v: 10           # velocity error gain
+
+# Physical parameters of the car-like robot
+max_speed: 3        # meters/second 
+max_psi: 21         # degree
+curvature: 1.3      # meters
+wheelbase: 0.38     # meters
+
+#DC motor parameters
+u_r_motor: 0.7                # dynamic friction relatic coefficient
+T_load_static: 0.175          # N*m, modeled as static friction
+beta_viscous: 0.0001
+J_equivalent_car: 0.0009      # Kg*m^2, equivalent rotational inertia of the car
+k_speed_motor: 0.0238         # m/rad, gain between w and v
+ta_motor : 0.005              # second, armature time constant of the DC motor
+kt_motor : 0.06               # N*m/V, Kt/Ra gain between torque and voltage
+ka_motor: 0.07                # gain between command and voltage  ~18 V/256
+kv_motor: 0.018               # back EMF gain
+
+# System configuration
+repeat_rate: 10   # hz
+show_animation: True

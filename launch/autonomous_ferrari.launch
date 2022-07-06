@@ -1,0 +1,29 @@
+<launch>
+  <rosparam file="$(find lego_ferrari)/config/my_param.yaml" />
+
+  <!-- wifi node-->
+  <node pkg="rosserial_server" type="socket_node" name="rosserial_server">
+      <rosparam>
+          port: 11411
+      </rosparam>
+  </node>
+
+  <!-- joystick node - PS4 joytstick -->
+  <node respawn="true" pkg="joy" type="joy_node" name="ps4_joy" >
+    <param name="dev" type="string" value="/dev/input/js2" />
+    <param name="deadzone" value="0.12" />
+  </node>
+
+  <!-- Mux node -->
+  <node pkg="lego_ferrari" type="joy_mux_navigation_node.py" name="mux_joy_navigator" output="screen" />
+  
+  <!-- Saturate node -->
+  <node pkg="lego_ferrari" type="saturate_cmd_node.py" name="saturate_cmd"/>
+
+  <!-- Navigator node -->
+  <node pkg="lego_ferrari" type="navigator_node.py" name="navigator" output="screen" />
+
+  <!-- Simulated Car node -->
+  <node pkg="lego_ferrari" type="simulated_car_node.py" name="simulated_car" output="screen" />
+  
+</launch>

@@ -1,0 +1,19 @@
+<launch>
+  <rosparam file="$(find lego_ferrari)/config/my_param.yaml" />
+
+  <!-- wifi node-->
+  <node pkg="rosserial_server" type="socket_node" name="rosserial_server">
+      <rosparam>
+          port: 11411
+      </rosparam>
+  </node>
+  
+  <!-- Saturate node -->
+  <node pkg="lego_ferrari" type="saturate_cmd_node.py" name="saturate_cmd">
+      <remap from="cmd_vel" to="/simulated_car/cmd_vel"/> 
+</node>
+
+  <!-- Simulated Car node -->
+  <node pkg="lego_ferrari" type="simulated_car_node.py" name="simulated_car" output="screen" />
+  
+</launch>
