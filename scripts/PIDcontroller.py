@@ -7,27 +7,31 @@ integro-derivative part
 """
 
 import numpy as np
+from TransferFunction import TransferFunction
 
 class PIDcontroller:
-    def __init__(self,kp, max = 100000, start_offset = 0):
-        self.k = kp
+    def __init__(self, kp, ki, dt, max = 100000, start_offset = 0):
+        self.dt = dt
+        self.kp = kp
+        self.ki = ki
         self.max = max
         self.current = 0.0
         self.start_offset = start_offset
+        self.i_err = 0.0
 
     def set_current(self, v):
         self.current = v
 
     def clear(self):
         self.current = 0.0
+        self.i_err = 0.0
 
     def calc_control(self, target):
         e = target - self.current
-        #print(self.current, target, e) 
+        self.i_err += e * self.dt
+        y = self.kp * e + self.ki*self.i_err
         if abs(self.current) < 0.0001 * self.max:
-            y = self.k * e + self.start_offset*np.sign(e)
-        else:
-            y = self.k * e 
+            y = y + self.start_offset*np.sign(e)
 
         if abs(y) > self.max:
            y = np.sign(y) * self.max

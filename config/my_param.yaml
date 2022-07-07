@@ -11,17 +11,18 @@ inertia_stop_step: 15        # simulated step of the stop by inertia (driver in 
 
 # Move2Goal parameters
 tolerance: 0.2    # meters 
-k_rho: 6        # velocity gain
-k_alpha: 40        # steering angle gain
-k_beta: 15         # smooth rotations
+k_rho: 5          # velocity gain
+k_alpha: 35       # steering angle gain
+k_beta: 13        # smooth rotations
 
 # Velocity controller
-k_v: 10           # velocity error gain
+k_v: 9           # velocity error gain
+k_i: 2            # integral action
 
 # Physical parameters of the car-like robot
-max_speed: 3        # meters/second 
+max_speed: 3.5      # meters/second 
 max_psi: 21         # degree
-curvature: 1.3      # meters
+curvature: 1.4      # meters
 wheelbase: 0.38     # meters
 
 #DC motor parameters

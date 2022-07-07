@@ -44,7 +44,6 @@ if __name__ == '__main__':
         cmd_min_move = rospy.get_param("/cmd_min_move", 30)
         
         #physics limit
-        max_velocity = rospy.get_param("/max_speed", 3)
         max_psi = np.deg2rad(rospy.get_param("/max_psi", 21))
         wheelbase = rospy.get_param("/wheelbase", 0.37)
         T_static = rospy.get_param("/T_load_static", 1)
