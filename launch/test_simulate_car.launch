@@ -15,5 +15,8 @@
 
   <!-- Simulated Car node -->
   <node pkg="lego_ferrari" type="simulated_car_node.py" name="simulated_car" output="screen" />
+
+  <!-- Test node -->
+  <node pkg="lego_ferrari" type="test_node.py" name="test_node" output="screen" />
   
 </launch>
