@@ -7,7 +7,6 @@ integro-derivative part
 """
 
 import numpy as np
-from TransferFunction import TransferFunction
 
 class PIDcontroller:
     def __init__(self, kp, ki, dt, max = 100000, start_offset = 0):

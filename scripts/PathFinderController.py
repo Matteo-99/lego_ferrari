@@ -62,10 +62,10 @@ class PathFinderController:
         alpha = (np.arctan2(y_diff, x_diff)
                  - theta + np.pi) % (2 * np.pi) - np.pi
         beta = (theta_goal - theta - alpha + np.pi) % (2 * np.pi) - np.pi
-        v = self.Kp_rho * rho
-        w = self.Kp_alpha * alpha - self.Kp_beta * beta
+        v = self.Kp_rho * rho # from rho to v
+        w = self.Kp_alpha * alpha - self.Kp_beta * beta # from alpha and beta to w
 
         if alpha > np.pi / 2 or alpha < -np.pi / 2:
             v = -v
 
-        return rho, v, w
+        return v, w

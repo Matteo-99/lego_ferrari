@@ -25,13 +25,13 @@ import rospy
 class Move2Goal:
     def __init__(self, tolerance, cmd_max_linear_speed, cmd_max_angle, max_velocity, 
                     max_psi, wheelbase, curvature, kv, show_animation, dt, ax_path, ax_traj):
-        self.tolerance = tolerance
-        self.cmd_max_linear_speed = cmd_max_linear_speed
-        self.cmd_max_angle = cmd_max_angle
-        self.max_speed = max_velocity
-        self.max_angle = max_psi
-        self.wheelbase = wheelbase
-        self.curvature = curvature
+        self.tolerance = tolerance # tolerance for the goal
+        self.cmd_max_linear_speed = cmd_max_linear_speed # max linear speed accepted from the control
+        self.cmd_max_angle = cmd_max_angle # max angle accepted from the control
+        self.max_speed = max_velocity # max linear speed
+        self.max_angle = max_psi # max angular speed
+        self.wheelbase = wheelbase # distance between the wheels
+        self.curvature = curvature # curvature of the vehicle
 
         self.goal_vector = []
         self.ActualGoal = Pose2D()
@@ -52,7 +52,7 @@ class Move2Goal:
         self.ax_path = ax_path
         self.ax_traj = ax_traj
         
-    def clear(self):
+    def clear(self): # initialize pose and goal vector to deafult values
         self.ActualGoal.x = 0.0
         self.ActualGoal.y = 0.0
         self.ActualGoal.theta = 0.0
@@ -73,25 +73,26 @@ class Move2Goal:
     def new_goal(self, GoalPose):   
         self.goal_vector = path_planner.planner(self.StartPose, GoalPose, self.wheelbase, 
                                                  self.curvature, self.dt, self.ax_path, )
+        # get goal vector
 
-        if not self.goal_vector:
+        if not self.goal_vector: # checks if the goal vector is been created
             pub_goal_reached.publish(False)
         else:
             print("Path founded\n")
             self.run = True
                
-    def move(self):
+    def move(self): # move the robot to the goal
         Cmd_vel = Ferrari_command()
-        self.state_update()
-        v, psi = self.calc_control()
+        self.state_update() # updates the goal
+        v, psi = self.calc_control() # calculates velocity and servo angle to get to current goal
 
-        Cmd_vel.linear_velocity = int(v)
-        Cmd_vel.servo = int(psi)
+        Cmd_vel.linear_velocity = int(v) # the car accepts only integer values for the velocity
+        Cmd_vel.servo = int(psi) # the car accepts only integer values for the servo angle
         Cmd_vel.brake = 0    
-        pub.publish(Cmd_vel)
-        pub_navigator.publish(Cmd_vel)
+        pub_sim.publish(Cmd_vel) # publish move command to the simulated car node
+        pub_navigator.publish(Cmd_vel) # publish move command to the navigator node of the real car
 
-    def state_update(self):
+    def state_update(self): # changes the goal if the car hasn't reached the last one
         if self.reached and self.v < 0.1:
             self.reached = False
             self.index = self.index+1
@@ -99,63 +100,25 @@ class Move2Goal:
                 pub_goal_reached.publish(True)    
                 self.run = False
         if self.run:
-            goal = self.goal_vector[self.index] 
+            goal = self.goal_vector[self.index] # get the next goal
             self.ActualGoal.x = goal[0]
             self.ActualGoal.y = goal[1]
             self.ActualGoal.theta = goal[2]      
 
-    def show(self):
-        if self.show_animation: #and self.run:
-            self.ax_traj.clear()
-
-            x = self.x_traj[-1]
-            y = self.y_traj[-1]
-            theta = self.theta_traj[-1]
-
-            # Corners of triangular vehicle when pointing to the right (0 rad) in the form [x,y,1].T
-            p1_i = np.array([0.9*self.wheelbase, 0*self.wheelbase, 1]).T
-            p2_i = np.array([-0.1*self.wheelbase, 0.25*self.wheelbase, 1]).T
-            p3_i = np.array([-0.1*self.wheelbase, -0.25*self.wheelbase, 1]).T
-
-            T = transformation_matrix(x, y, theta)
-            p1 = np.matmul(T, p1_i)
-            p2 = np.matmul(T, p2_i)
-            p3 = np.matmul(T, p3_i)
-
-            self.ax_traj.arrow(self.StartPose.x, self.StartPose.y, 
-                    self.wheelbase * np.cos(self.StartPose.theta),
-                    self.wheelbase * np.sin(self.StartPose.theta), fc='r',
-                    head_width=0.5*self.wheelbase, 
-                    head_length=0.5*self.wheelbase, length_includes_head = True)
-            self.ax_traj.arrow(self.ActualGoal.x, self.ActualGoal.y, 
-                    self.wheelbase * np.cos(self.ActualGoal.theta), 
-                    self.wheelbase * np.sin(self.ActualGoal.theta), fc='g',
-                    head_width=0.5*self.wheelbase, 
-                    head_length=0.5*self.wheelbase, length_includes_head = True)
-
-            self.ax_traj.plot([p1[0], p2[0]], [p1[1], p2[1]], 'k-')
-            self.ax_traj.plot([p2[0], p3[0]], [p2[1], p3[1]], 'k-')
-            self.ax_traj.plot([p3[0], p1[0]], [p3[1], p1[1]], 'k-')
-
-            self.ax_traj.plot(self.x_traj, self.y_traj, 'b--')
-            
-            self.ax_traj.grid()
-            x_min, x_max = self.ax_path.get_xlim()
-            y_min, y_max = self.ax_path.get_ylim()
-            self.ax_traj.set_xlim([x_min- 1, x_max +1])
-            self.ax_traj.set_ylim([y_min- 1, y_max +1])
-    
     def setActualState(self, data):
         ActualPose = Pose2D(data.x, data.y, data.theta)
         self.ActualPose = ActualPose
         self.v = data.v
-        PID_vel.set_current(self.v)
-        if (abs(ActualPose.x -  self.x_traj[-1]) > 0.001) or (abs(ActualPose.y -  self.y_traj[-1]) > 0.001):       
+        PID_vel.set_current(self.v) # set the current velocity for the PID controller
+        if (abs(ActualPose.x -  self.x_traj[-1]) > 0.001) or (abs(ActualPose.y -  self.y_traj[-1]) > 0.001):     
             self.x_traj.append(self.ActualPose.x)
             self.y_traj.append(self.ActualPose.y)
             self.theta_traj.append(self.ActualPose.theta)
+        ''' if the car position at the end of a motion is different 
+            from the expected trajectory,
+            appends the actual last position to the trajectory'''
 
-    def calc_control(self):    
+    def calc_control(self): # calculates the control law to get to the next goal
         x = self.ActualPose.x
         y = self.ActualPose.y
         theta = self.ActualPose.theta
@@ -168,21 +131,20 @@ class Move2Goal:
             x_diff = x_goal - x
             y_diff = y_goal - y
 
-            rho = np.hypot(x_diff, y_diff)
-            if rho > self.tolerance:                                        
-                x_diff = x_goal - x
-                y_diff = y_goal - y
+            rho = np.hypot(x_diff, y_diff) # distance from the goal
 
-                rho, v, w = controller.calc_control_command(x_diff, y_diff, theta, theta_goal)
+            if rho > self.tolerance: # if the car distance is not in the range of tolerance of the goal     
+                v, w = controller.calc_control_command(x_diff, y_diff, theta, theta_goal) # find velocity and steering wheel angle 
                 
-                psi = np.arctan(w*self.wheelbase/abs(v))    #rad
-                psi = psi*(180/np.pi)                       #deg
+                psi = np.arctan(w*self.wheelbase/abs(v))    # calculate the servo angle in rad
+                psi = psi*(180/np.pi)                       # conversion to deg
                 
-                if abs(psi) > self.cmd_max_angle:
+                if abs(psi) > self.cmd_max_angle: #security check for the servo angle
                     psi = np.sign(psi) * self.cmd_max_angle
 
-                if abs(v) > self.max_speed:
+                if abs(v) > self.max_speed: #security check for the motor speed
                     v = np.sign(v) * self.max_speed
+
                 cmd_v = PID_vel.calc_control(v)
 
                 return cmd_v, psi
@@ -192,11 +154,53 @@ class Move2Goal:
         else:
             return 0.0, 0.0
 
-def transformation_matrix(x, y, theta):
+    def show(self):
+            if self.show_animation: #and self.run:
+                self.ax_traj.clear()
+
+                x = self.x_traj[-1]
+                y = self.y_traj[-1]
+                theta = self.theta_traj[-1]
+
+                # Corners of triangular vehicle when pointing to the right (0 rad) in the form [x,y,1].T
+                p1_i = np.array([0.9*self.wheelbase, 0*self.wheelbase, 1]).T
+                p2_i = np.array([-0.1*self.wheelbase, 0.25*self.wheelbase, 1]).T
+                p3_i = np.array([-0.1*self.wheelbase, -0.25*self.wheelbase, 1]).T
+
+                T = transformation_matrix(x, y, theta)
+                p1 = np.matmul(T, p1_i)
+                p2 = np.matmul(T, p2_i)
+                p3 = np.matmul(T, p3_i)
+
+                self.ax_traj.arrow(self.StartPose.x, self.StartPose.y, 
+                        self.wheelbase * np.cos(self.StartPose.theta),
+                        self.wheelbase * np.sin(self.StartPose.theta), fc='r',
+                        head_width=0.5*self.wheelbase, 
+                        head_length=0.5*self.wheelbase, length_includes_head = True)
+                self.ax_traj.arrow(self.ActualGoal.x, self.ActualGoal.y, 
+                        self.wheelbase * np.cos(self.ActualGoal.theta), 
+                        self.wheelbase * np.sin(self.ActualGoal.theta), fc='g',
+                        head_width=0.5*self.wheelbase, 
+                        head_length=0.5*self.wheelbase, length_includes_head = True)
+
+                self.ax_traj.plot([p1[0], p2[0]], [p1[1], p2[1]], 'k-')
+                self.ax_traj.plot([p2[0], p3[0]], [p2[1], p3[1]], 'k-')
+                self.ax_traj.plot([p3[0], p1[0]], [p3[1], p1[1]], 'k-')
+
+                self.ax_traj.plot(self.x_traj, self.y_traj, 'b--')
+                
+                self.ax_traj.grid()
+                x_min, x_max = self.ax_path.get_xlim()
+                y_min, y_max = self.ax_path.get_ylim()
+                self.ax_traj.set_xlim([x_min- 1, x_max +1])
+                self.ax_traj.set_ylim([y_min- 1, y_max +1])
+        
+
+def transformation_matrix(x, y, theta): # 2D transformation matrix
     return np.array([
         [np.cos(theta), -np.sin(theta), x],
-        [np.sin(theta), np.cos(theta), y],
-        [0, 0, 1]
+        [np.sin(theta), np.cos(theta),  y],
+        [0,             0,              1]
     ])
         
 def callback_pose(data):
@@ -249,13 +253,15 @@ if __name__ == '__main__':
         k_i = rospy.get_param("/k_i", 30)
         PID_vel = PIDcontroller(k_v, k_i, dt, cmd_max_velocity, cmd_min_move)
     	
-        fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
+        fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1) # create figure and subplots for simulation
         nav = Move2Goal(tolerance, cmd_max_velocity, cmd_max_angle, max_velocity, 
                             max_psi, wheelbase, curvature, k_v, show_animation, dt, ax1, ax2)
         
-        pub = rospy.Publisher('simulated_car/cmd_vel', Ferrari_command, queue_size=1)
+        #initialization of nodes
+        pub_sim = rospy.Publisher('simulated_car/cmd_vel', Ferrari_command, queue_size=1)
         pub_navigator = rospy.Publisher('navigator/cmd_vel', Ferrari_command, queue_size=1)
         pub_goal_reached = rospy.Publisher('navigator/goal_reached', Bool, queue_size=1)
+        
         sub = rospy.Subscriber('simulated_car/State', State, callback_pose)
         sub_goal = rospy.Subscriber('navigator/goal', Pose2D, callback_new_goal)
         sub_stopNav = rospy.Subscriber('clear_nav', Bool, callback_clear)
