@@ -21,13 +21,23 @@ from lego_ferrari.msg import Ferrari_command
 from geometry_msgs.msg import Pose2D
 from std_msgs.msg import Bool
 
-# joystick button config
+# ps4 dualshock joystick button config
 FORWARD = 5	    # R2
 BACKWARD = 2	# L2
 ANGULAR = 0	    # left handle
 BRAKE = 1	    # circle button
 AUTONOMOUS = 2	# triangle button
 MANUAL = 0	    # x button
+
+'''
+# xbox one joystick button config
+FORWARD = 5	    # RT
+BACKWARD = 4	# LT
+ANGULAR = 0	    # left stick
+BRAKE = 1	    # B button
+AUTONOMOUS = 3	# Y button
+MANUAL = 2	    # x button 
+'''
 
 cmd_joy = Ferrari_command()
 cmd_navigator = Ferrari_command()
