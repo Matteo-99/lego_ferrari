@@ -24,7 +24,7 @@ import rospy
 
 class Move2Goal:
     def __init__(self, tolerance, cmd_max_linear_speed, cmd_max_angle, max_velocity, 
-                    max_psi, wheelbase, curvature, kv, show_animation, dt, ax_path, ax_traj):
+                    max_psi, wheelbase, curvature, show_animation, dt, ax_path, ax_traj):
         self.tolerance = tolerance
         self.cmd_max_linear_speed = cmd_max_linear_speed
         self.cmd_max_angle = cmd_max_angle
@@ -96,6 +96,7 @@ class Move2Goal:
             self.reached = False
             self.index = self.index+1
             PID_vel.clear()
+            PID_psi.clear()
             if self.index >= len(self.goal_vector):
                 pub_goal_reached.publish(True)    
                 self.run = False
@@ -177,16 +178,16 @@ class Move2Goal:
                 rho, v, w = controller.calc_control_command(x_diff, y_diff, theta, theta_goal)
                 
                 psi = np.arctan(w*self.wheelbase/abs(v))    #rad
-                psi = psi*(180/np.pi)                       #deg
-                
-                if abs(psi) > self.cmd_max_angle:
-                    psi = np.sign(psi) * self.cmd_max_angle
+                if abs(psi) > self.max_angle:
+                    psi = np.sign(psi) * self.max_angle
+                psi = psi*(180/np.pi)                       #deg                
+                cmd_psi = PID_psi.calc_control(psi)
 
                 if abs(v) > self.max_speed:
                     v = np.sign(v) * self.max_speed
                 cmd_v = PID_vel.calc_control(v)
 
-                return cmd_v, psi
+                return cmd_v, cmd_psi
             else :
                 self.reached = True
                 return 0.0, 0.0
@@ -246,13 +247,17 @@ if __name__ == '__main__':
         k_beta = rospy.get_param("/k_beta", 3)
         controller = PathFinderController(k_rho, k_alpha, k_beta)
 
-        k_v = rospy.get_param("/k_v", 30)
-        k_i = rospy.get_param("/k_i", 30)
-        PID_vel = PIDcontroller(k_v, k_i, dt, cmd_max_velocity, cmd_min_move)
+        kp_vel = rospy.get_param("/kp_vel", 30)
+        ki_vel = rospy.get_param("/ki_vel", 30)
+        PID_vel = PIDcontroller(kp_vel, ki_vel, dt, cmd_max_velocity, cmd_min_move)
+
+        kp_psi = rospy.get_param("/kp_psi", 30)
+        ki_psi = rospy.get_param("/ki_psi", 30)
+        PID_psi = PIDcontroller(kp_psi, ki_psi, dt, cmd_max_angle)
     	
         fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
         nav = Move2Goal(tolerance, cmd_max_velocity, cmd_max_angle, max_velocity, 
-                            max_psi, wheelbase, curvature, k_v, show_animation, dt, ax1, ax2)
+                            max_psi, wheelbase, curvature, show_animation, dt, ax1, ax2)
         
         pub = rospy.Publisher('simulated_car/cmd_vel', Ferrari_command, queue_size=1)
         pub_navigator = rospy.Publisher('navigator/cmd_vel', Ferrari_command, queue_size=1)

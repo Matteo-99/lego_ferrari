@@ -20,7 +20,7 @@ from std_msgs.msg import Bool
 def callback_cmd(cmd_received):
     # Saturate the input command in the same way of the real car-like robot
     cmd_sat = sat.update_cmd(cmd_received)
-    print(cmd_sat)
+    
     # Set the actual command to the simulated car
     my_car.set_cmd(cmd_sat)  
 

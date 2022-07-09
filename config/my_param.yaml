@@ -1,5 +1,5 @@
 # Command limits
-cmd_max_velocity: 256       # max velocity [0-256], max duty cycle of the PWM controlling the DC motor
+cmd_max_velocity: 100       # max velocity [0-256], max duty cycle of the PWM controlling the DC motor
 cmd_max_angle: 70           # max servo angle [deg]
 cmd_max_turn: 20            # max angle step for the servo at each execution [deg] 
 cmd_max_acc_step: 1         # max acceleration step at each execution
@@ -12,15 +12,19 @@ inertia_stop_step: 15        # simulated step of the stop by inertia (driver in 
 # Move2Goal parameters
 tolerance: 0.2    # meters 
 k_rho: 5          # velocity gain
-k_alpha: 35       # steering angle gain
-k_beta: 13        # smooth rotations
+k_alpha: 7       # steering angle gain
+k_beta: 3        # smooth rotations
 
 # Velocity controller
-k_v: 20            # velocity error gain
-k_i: 5            # integral action
+kp_vel: 20            # proportional gain
+ki_vel: 5            # integral action
+
+# Psi controller
+kp_psi: 20            # proportional gain
+ki_psi: 5            # integral action
 
 # Physical parameters of the car-like robot
-max_speed: 3.5      # meters/second 
+max_speed: 3      # meters/second 
 max_psi: 20         # degree
 curvature: 1.4      # meters
 wheelbase: 0.38     # meters
