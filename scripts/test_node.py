@@ -75,7 +75,6 @@ def callback_cmd(cmd_received):
 
 def callback_pose(data):
     test.setActualState(data)
-    #print(data.v)
 
 def run(i):
     if not rospy.is_shutdown():

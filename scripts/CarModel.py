@@ -9,7 +9,6 @@ from DCmotorModel import DC_motor
 from lego_ferrari.msg import State
 from geometry_msgs.msg import Pose2D
 from lego_ferrari.msg import Ferrari_command
-
        
 class BicycleModel:
     def __init__(self, wheelbase, cmd_max_angle, max_psi, ta, tm, kt, k_speed, ka, kv, 
@@ -27,12 +26,16 @@ class BicycleModel:
     def move(self):  
         for _ in range(self.points):
             psi = self.servo_update()
+            
+            # simulate DC motor to get a more precise linear velocity
+            v = self.motor.update(self.cmd.linear_velocity) 
 
-            v = self.motor.update(self.cmd.linear_velocity) # simulate DC motor to get a more precise linear velocity
-
-            self.Pose.theta = self.Pose.theta + v*np.tan(psi)/self.wheelbase * self.dt # calculate current theta from the linear velocity and the servo angle
-            self.Pose.x = self.Pose.x + v * np.cos(self.Pose.theta) * self.dt # calculate current x from the linear velocity and the current theta
-            self.Pose.y = self.Pose.y + v * np.sin(self.Pose.theta) * self.dt # calculate current y from the linear velocity and the current theta
+            # calculate current theta from the linear velocity and the servo angle
+            self.Pose.theta = self.Pose.theta + v*np.tan(psi)/self.wheelbase * self.dt 
+            # calculate current x from the linear velocity and the current theta 
+            self.Pose.x = self.Pose.x + v * np.cos(self.Pose.theta) * self.dt 
+            # calculate current y from the linear velocity and the current theta
+            self.Pose.y = self.Pose.y + v * np.sin(self.Pose.theta) * self.dt 
 
         return State(self.Pose.x, self.Pose.y, self.Pose.theta, v, psi)
     
@@ -48,7 +51,7 @@ class BicycleModel:
     def set_cmd(self, cmd_received):
         self.cmd = cmd_received
 
-    # This function convert the input <Ferrari_command.servo> msg into the real steering angle psi of the front wheels
+    # This function convert the angle of the servo motor into the real steering angle psi of the front wheels
     def servo_update(self):
         return self.cmd.servo/self.cmd_max_angle*self.max_psi
          

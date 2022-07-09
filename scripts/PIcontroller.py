@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 
 """"
-PID Controller model.
-In this first version only the proportional part is present, if necessary it is possible to add the 
-integro-derivative part
+PI Controller model.
 """
 
 import numpy as np
 
-class PIDcontroller:
-    def __init__(self, kp, ki, dt, max = 100000, start_offset = 0):
+class PIcontroller:
+    def __init__(self, kp, ki, dt, max = 100000, start_offset = 0.0):
         self.dt = dt
         self.kp = kp
         self.ki = ki
