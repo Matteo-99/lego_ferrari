@@ -12,7 +12,7 @@ from lego_ferrari.msg import Ferrari_command
        
 class BicycleModel:
     def __init__(self, wheelbase, cmd_max_angle, max_psi, ta, tm, kt, k_speed, ka, kv, 
-                    T_static, u_r, beta_viscous, dt, points = 100):
+                    T_static, u_r, beta_viscous, dt, points = 1):
         self.cmd_max_angle = cmd_max_angle
         self.max_psi = max_psi
         self.points = points

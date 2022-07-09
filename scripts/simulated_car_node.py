@@ -70,7 +70,7 @@ if __name__ == '__main__':
         
         # Object that simulate the behaviour of the car
         my_car = BicycleModel(wheelbase, cmd_max_angle, max_psi, ta, tm, kt, k_speed, ka, kv, 
-                                T_static, u_r, beta_viscous, dt)
+                                T_static, u_r, beta_viscous, dt, 1000)
 
         while not rospy.is_shutdown():
             ActualState = my_car.move()        
