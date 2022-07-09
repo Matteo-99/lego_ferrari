@@ -28,11 +28,11 @@ class BicycleModel:
         for _ in range(self.points):
             psi = self.servo_update()
 
-            v = self.motor.update(self.cmd.linear_velocity)
+            v = self.motor.update(self.cmd.linear_velocity) # simulate DC motor to get a more precise linear velocity
 
-            self.Pose.theta = self.Pose.theta + v*np.tan(psi)/self.wheelbase * self.dt
-            self.Pose.x = self.Pose.x + v * np.cos(self.Pose.theta) * self.dt
-            self.Pose.y = self.Pose.y + v * np.sin(self.Pose.theta) * self.dt
+            self.Pose.theta = self.Pose.theta + v*np.tan(psi)/self.wheelbase * self.dt # calculate current theta from the linear velocity and the servo angle
+            self.Pose.x = self.Pose.x + v * np.cos(self.Pose.theta) * self.dt # calculate current x from the linear velocity and the current theta
+            self.Pose.y = self.Pose.y + v * np.sin(self.Pose.theta) * self.dt # calculate current y from the linear velocity and the current theta
 
         return State(self.Pose.x, self.Pose.y, self.Pose.theta, v, psi)
     
