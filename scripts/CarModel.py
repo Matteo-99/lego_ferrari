@@ -12,15 +12,16 @@ from lego_ferrari.msg import Ferrari_command
 
        
 class BicycleModel:
-    def __init__(self, wheelbase, cmd_max_angle, max_psi, ta, kt, J, k_speed, ka, kv, T_static, u_r, beta_viscous, dt, points = 100):
+    def __init__(self, wheelbase, cmd_max_angle, max_psi, ta, tm, kt, k_speed, ka, kv, 
+                    T_static, u_r, beta_viscous, dt, points = 100):
         self.cmd_max_angle = cmd_max_angle
         self.max_psi = max_psi
         self.points = points
         self.Pose = Pose2D()
         self.cmd = Ferrari_command()
         self.wheelbase = wheelbase
-        self.dt = dt/points
-        self.motor = DC_motor(ta, kt, J, k_speed, ka, kv, T_static, u_r, beta_viscous, self.dt)
+        self.dt = dt/float(points)
+        self.motor = DC_motor(ta, tm, kt, k_speed, ka, kv, T_static, u_r, beta_viscous, self.dt)
 
     # Bycicle model    
     def move(self):  

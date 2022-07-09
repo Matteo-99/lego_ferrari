@@ -11,8 +11,6 @@ import matplotlib.animation as animation
 from lego_ferrari.msg import Ferrari_command
 from lego_ferrari.msg import State
 from geometry_msgs.msg import Twist
-       
-cmd_sent = Ferrari_command()
 
 class TestClass:
     def __init__(self, ax, wheelbase):
@@ -77,7 +75,7 @@ def callback_cmd(cmd_received):
 
 def callback_pose(data):
     test.setActualState(data)
-    print(data.v, data.psi)
+    #print(data.v)
 
 def run(i):
     if not rospy.is_shutdown():

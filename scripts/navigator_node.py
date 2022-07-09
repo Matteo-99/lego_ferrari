@@ -95,6 +95,7 @@ class Move2Goal:
         if self.reached and self.v < 0.1:
             self.reached = False
             self.index = self.index+1
+            PID_vel.clear()
             if self.index >= len(self.goal_vector):
                 pub_goal_reached.publish(True)    
                 self.run = False
@@ -262,7 +263,7 @@ if __name__ == '__main__':
         
         rate = rospy.Rate(repeat) # 10hz
 
-        ani = animation.FuncAnimation(fig, navigate, interval=msec)
+        ani = animation.FuncAnimation(fig, navigate, interval=0.7*msec)
         plt.show()
 
     except rospy.ROSInterruptException:

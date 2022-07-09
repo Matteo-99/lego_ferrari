@@ -5,7 +5,7 @@ cmd_max_turn: 20            # max angle step for the servo at each execution [de
 cmd_max_acc_step: 1         # max acceleration step at each execution
 cmd_max_dec_step: 4         # max deceleration step at each execution
 cmd_start_acc_step: 20      # initial velocity step
-cmd_min_move: 44            # minimum value of velocity for which the car starts moving
+cmd_min_move: 47            # minimum value of velocity for which the car starts moving
 cmd_zero_speed_tol: 3       # maximum velocity approximated to 0
 inertia_stop_step: 15        # simulated step of the stop by inertia (driver in High impedance mode)
 
@@ -16,23 +16,23 @@ k_alpha: 35       # steering angle gain
 k_beta: 13        # smooth rotations
 
 # Velocity controller
-k_v: 9           # velocity error gain
-k_i: 2            # integral action
+k_v: 20            # velocity error gain
+k_i: 5            # integral action
 
 # Physical parameters of the car-like robot
 max_speed: 3.5      # meters/second 
-max_psi: 21         # degree
+max_psi: 20         # degree
 curvature: 1.4      # meters
 wheelbase: 0.38     # meters
 
 #DC motor parameters
-u_r_motor: 0.7                # dynamic friction relatic coefficient
-T_load_static: 0.175          # N*m, modeled as static friction
-beta_viscous: 0.0001
-J_equivalent_car: 0.0009      # Kg*m^2, equivalent rotational inertia of the car
-k_speed_motor: 0.0238         # m/rad, gain between w and v
+u_r_motor: 0.91               # dynamic friction relatic coefficient
+T_load_static: 0.17           # N*m, modeled as static friction
+beta_viscous: 0.000001
+k_speed_motor: 0.045          # m/rad, gain between w and v
 ta_motor : 0.005              # second, armature time constant of the DC motor
-kt_motor : 0.06               # N*m/V, Kt/Ra gain between torque and voltage
+tm_motor : 3.2                # second, armature time constant of the DC motor
+kt_motor : 0.056              # N*m/V, Kt/Ra gain between torque and voltage
 ka_motor: 0.07                # gain between command and voltage  ~18 V/256
 kv_motor: 0.018               # back EMF gain
 

@@ -19,7 +19,8 @@ from std_msgs.msg import Bool
 
 def callback_cmd(cmd_received):
     # Saturate the input command in the same way of the real car-like robot
-    cmd_sat = sat.update_cmd(cmd_received)   
+    cmd_sat = sat.update_cmd(cmd_received)
+    print(cmd_sat)
     # Set the actual command to the simulated car
     my_car.set_cmd(cmd_sat)  
 
@@ -41,7 +42,6 @@ if __name__ == '__main__':
         max_dec_step = rospy.get_param("/cmd_max_dec_step", 4)
         cmd_zero_tol = rospy.get_param("/cmd_zero_speed_tol", 3)
         brake_step = rospy.get_param("/inertia_stop_step", 10)
-        cmd_min_move = rospy.get_param("/cmd_min_move", 30)
         
         #physics limit
         max_psi = np.deg2rad(rospy.get_param("/max_psi", 21))
@@ -50,8 +50,8 @@ if __name__ == '__main__':
         beta_viscous = rospy.get_param("/beta_viscous", 0.5)
         u_r = rospy.get_param("/u_r_motor", 0.5)
         ta = rospy.get_param("/ta_motor", 0.5) 
-        kt = rospy.get_param("/kt_motor", 0.5) 
-        J_car = rospy.get_param("/J_equivalent_car", 0.5) 
+        kt = rospy.get_param("/kt_motor", 0.5)
+        tm = rospy.get_param("/tm_motor", 0.5) 
         k_speed = rospy.get_param("/k_speed_motor", 0.5) 
         ka = rospy.get_param("/ka_motor", 0.5) 
         kv = rospy.get_param("/kv_motor", 0.5)
@@ -69,7 +69,8 @@ if __name__ == '__main__':
                                 cmd_zero_tol, brake_step, cmd_max_angle, max_turn)
         
         # Object that simulate the behaviour of the car
-        my_car = BicycleModel(wheelbase, cmd_max_angle, max_psi, ta, kt, J_car, k_speed, ka, kv, T_static, u_r, beta_viscous, dt)
+        my_car = BicycleModel(wheelbase, cmd_max_angle, max_psi, ta, tm, kt, k_speed, ka, kv, 
+                                T_static, u_r, beta_viscous, dt)
 
 
         while not rospy.is_shutdown():
