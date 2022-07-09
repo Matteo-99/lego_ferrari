@@ -108,7 +108,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES lego_ferrari
-#  CATKIN_DEPENDS joy message_generation message_runtime rospy std_msgs
+#  CATKIN_DEPENDS joy message_generation message_runtime rospy std_msgs rosserial_server
 #  DEPENDS system_lib
 )
 

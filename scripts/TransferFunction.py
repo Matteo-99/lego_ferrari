@@ -8,7 +8,7 @@ import scipy.signal
 import numpy
 
 class TransferFunction:
-    def __init__(self, num, den, Ts, points = 1, tol = pow(10,-5)):
+    def __init__(self, num, den, Ts, points = 1, tol = 0.00001):
         self.dt = Ts/float(points)
         self.points = points
         self.tol = tol
@@ -26,7 +26,7 @@ class TransferFunction:
             y = self.Gss.C.dot(self.x) +  self.Gss.D.dot(u)
             self.x += xdot*self.dt
 
-            if abs(self.x) < self.tol and abs(xdot) < self.tol:
+            if numpy.linalg.norm(self.x) < self.tol and numpy.linalg.norm(xdot) < self.tol:
                 self.clear()
 
         return y[0,0]

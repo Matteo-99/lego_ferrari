@@ -8,9 +8,9 @@ from TransferFunction import TransferFunction
 import numpy as np
 
 class DC_motor:
-    def __init__(self, ta, kt, J, k_speed, ka, kv, T_static, u_r, beta_viscous, dt, points = 1):
+    def __init__(self, ta, tm, kt, k_speed, ka, kv, T_static, u_r, beta_viscous, dt, points = 1):
         self.points = points
-        self.dt = dt/self.points
+        self.dt = dt/float(self.points)
 
         self.k_speed = k_speed
         self.ka = ka
@@ -35,14 +35,14 @@ class DC_motor:
     def update(self, u):
         for _ in range(self.points):
             if self.is_moving:
-                T_load = self.T_dynamic + self.beta_viscous * self.w
+                T_load = self.T_dynamic
                 
                 Va = u*self.ka - self.kv*self.w
                 Tm = self.v2T.update(Va)
 
                 T_eff = Tm - T_load*np.sign(Tm)
                 self.w = self.T2w.update(T_eff)
-                if abs(self.w) < 0.8 and Tm*np.sign(Tm) < T_load:
+                if abs(self.w) < 1 and Tm*np.sign(Tm) < T_load:
                     self.clear()
 
             else:
@@ -61,5 +61,6 @@ class DC_motor:
                 self.w = self.T2w.update(T_eff)
 
         v = self.w * self.k_speed
+
         #print(Va, Tm, T_eff, self.w, v)
         return v
