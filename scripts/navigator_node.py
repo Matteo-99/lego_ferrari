@@ -139,20 +139,18 @@ class Move2Goal:
 
             rho = np.hypot(x_diff, y_diff) # distance from the goal
 
-            if rho > self.tolerance: # if the car distance is not in the range of tolerance of the goal     
-                v, w = controller.calc_control_command(x_diff, y_diff, theta, theta_goal) # find velocity and angular velocity
-                psi = np.arctan(w*self.wheelbase/abs(v))    # calculate the steering angle in rad
-                if abs(psi) > self.max_angle:               # security check for the steering angle
-                    psi = np.sign(psi) * self.max_angle
-                psi = psi*(180/np.pi)                       # conversion to deg                
+            if rho > self.tolerance: # if the car distance is not in the range of tolerance of the goal                
+                # Calculates next linear velocity and steering angle
+                v, psi = controller.calc_control_command(x_diff, y_diff, theta, theta_goal, self.wheelbase, self.max_angle, self.max_speed) 
+                
+                # Calculate next steering angle
                 cmd_psi = PI_psi.calc_control(psi)
-
-                if abs(v) > self.max_speed: #security check for the motor speed
-                    v = np.sign(v) * self.max_speed
-
+                
+                # Calculate next velocity
                 cmd_v = PI_vel.calc_control(v)
 
                 return cmd_v, cmd_psi
+                
             else :
                 self.reached = True
                 return 0.0, 0.0
