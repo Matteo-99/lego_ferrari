@@ -114,7 +114,7 @@ class Move2Goal:
         self.ActualPose = ActualPose
         PI_vel.set_current(data.v)      # set the current velocity for the PI controller
         PI_psi.set_current(data.psi)    # set the current steering angle for the PI controller
-        
+        self.v = data.v
         if (abs(ActualPose.x -  self.x_traj[-1]) > 0.001) or (abs(ActualPose.y -  self.y_traj[-1]) > 0.001):     
             self.x_traj.append(self.ActualPose.x)
             self.y_traj.append(self.ActualPose.y)
@@ -141,7 +141,10 @@ class Move2Goal:
 
             if rho > self.tolerance: # if the car distance is not in the range of tolerance of the goal     
                 v, w = controller.calc_control_command(x_diff, y_diff, theta, theta_goal) # find velocity and angular velocity
-                psi = np.arctan(w*self.wheelbase/abs(v))    # calculate the steering angle in rad
+                if(abs(v) > 0):
+                    psi = np.arctan(w*self.wheelbase/abs(v))    # calculate the steering angle in rad
+                else:
+                    psi = np.arctan(w*self.wheelbase/0.00001)
                 if abs(psi) > self.max_angle:               # security check for the steering angle
                     psi = np.sign(psi) * self.max_angle
                 psi = psi*(180/np.pi)                       # conversion to deg                
@@ -151,7 +154,7 @@ class Move2Goal:
                     v = np.sign(v) * self.max_speed
 
                 cmd_v = PI_vel.calc_control(v)
-
+                print(v, psi)
                 return cmd_v, cmd_psi
             else :
                 self.reached = True
