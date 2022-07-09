@@ -25,7 +25,7 @@ class PathFinderController:
         self.Kp_alpha = Kp_alpha
         self.Kp_beta = Kp_beta
 
-    def calc_control_command(self, x_diff, y_diff, theta, theta_goal):
+    def calc_control_command(self, x_diff, y_diff, theta, theta_goal, wheelbase, max_angle, max_speed):
         """
         Returns the control command for the linear and angular velocities as
         well as the distance to goal
@@ -65,7 +65,16 @@ class PathFinderController:
         v = self.Kp_rho * rho # from rho to v
         w = self.Kp_alpha * alpha - self.Kp_beta * beta # from alpha and beta to w
 
+        psi = np.arctan(w*wheelbase/abs(v)) # calculate the steering angle in rad
+
         if alpha > np.pi / 2 or alpha < -np.pi / 2:
             v = -v
 
-        return v, w
+        if abs(psi) > max_angle:               # security check for the steering angle
+            psi = np.sign(psi) * max_angle
+        psi = psi*(180/np.pi)                       # conversion to deg   
+
+        if abs(v) > max_speed: #security check for the motor speed
+                v = np.sign(v) * max_speed
+
+        return v, psi

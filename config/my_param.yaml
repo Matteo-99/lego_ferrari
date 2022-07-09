@@ -38,7 +38,7 @@ ta_motor : 0.005              # [s], armature time constant of the DC motor
 tm_motor : 3.2                # [s], mechanical time constant of the DC motor
 kt_motor : 0.056              # [N*m/V], Kt/Ra gain between torque and voltage
 ka_motor: 0.07                # [V] gain between command and voltage  ~18 V/256
-kv_motor: 0.018               # [V*s/rad], back EMF gain
+kv_motor: 0.018  
 
 # System configuration
 repeat_rate: 10               # [hz]
