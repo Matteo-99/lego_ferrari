@@ -148,7 +148,7 @@ class Move2Goal:
                 
                 # Calculate next velocity
                 cmd_v = PI_vel.calc_control(v)
-                print(v, psi)
+                
                 return cmd_v, cmd_psi
                 
             else :
