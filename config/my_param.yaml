@@ -20,8 +20,8 @@ kp_vel: 20            # proportional gain
 ki_vel: 6.25             # integral action
 
 # Psi controller
-kp_psi: 3.5            # proportional gain
-ki_psi: 1              # integral action
+kp_psi: 17            # proportional gain
+ki_psi: 5              # integral action
 
 # Physical parameters of the car-like robot
 max_speed: 3        # [m/s] 
