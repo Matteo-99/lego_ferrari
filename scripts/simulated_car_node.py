@@ -50,8 +50,8 @@ if __name__ == '__main__':
         beta_viscous = rospy.get_param("/beta_viscous", 0.5)
         u_r = rospy.get_param("/u_r_motor", 0.5)
         ta = rospy.get_param("/ta_motor", 0.5) 
+        tm = rospy.get_param("/tm_motor", 0.5)
         kt = rospy.get_param("/kt_motor", 0.5)
-        tm = rospy.get_param("/tm_motor", 0.5) 
         k_speed = rospy.get_param("/k_speed_motor", 0.5) 
         ka = rospy.get_param("/ka_motor", 0.5) 
         kv = rospy.get_param("/kv_motor", 0.5)
@@ -71,7 +71,6 @@ if __name__ == '__main__':
         # Object that simulate the behaviour of the car
         my_car = BicycleModel(wheelbase, cmd_max_angle, max_psi, ta, tm, kt, k_speed, ka, kv, 
                                 T_static, u_r, beta_viscous, dt)
-
 
         while not rospy.is_shutdown():
             ActualState = my_car.move()        

@@ -15,7 +15,7 @@ import matplotlib.animation as animation
 import numpy as np
 import path_planner as path_planner
 from PathFinderController import PathFinderController
-from PIDcontroller import PIDcontroller
+from PIcontroller import PIcontroller
 from geometry_msgs.msg import Pose2D
 from lego_ferrari.msg import Ferrari_command
 from lego_ferrari.msg import State
@@ -25,13 +25,13 @@ import rospy
 class Move2Goal:
     def __init__(self, tolerance, cmd_max_linear_speed, cmd_max_angle, max_velocity, 
                     max_psi, wheelbase, curvature, show_animation, dt, ax_path, ax_traj):
-        self.tolerance = tolerance # tolerance for the goal
-        self.cmd_max_linear_speed = cmd_max_linear_speed # max linear speed accepted from the control
-        self.cmd_max_angle = cmd_max_angle # max angle accepted from the control
-        self.max_speed = max_velocity # max linear speed
-        self.max_angle = max_psi # max angular speed
-        self.wheelbase = wheelbase # distance between the wheels
-        self.curvature = curvature # curvature of the vehicle
+        self.tolerance = tolerance                          # tolerance for the goal
+        self.cmd_max_linear_speed = cmd_max_linear_speed    # max linear speed command accepted from the control
+        self.cmd_max_angle = cmd_max_angle                  # max angle accepted from the control
+        self.max_speed = max_velocity                       # max linear speed
+        self.max_angle = max_psi                            # max steering angle
+        self.wheelbase = wheelbase                          # distance between the two axis of wheels
+        self.curvature = curvature                          # min curvature of the vehicle
 
         self.goal_vector = []
         self.ActualGoal = Pose2D()
@@ -80,24 +80,26 @@ class Move2Goal:
         else:
             print("Path founded\n")
             self.run = True
-               
-    def move(self): # move the robot to the goal
+    
+    # move the robot to the goal           
+    def move(self): 
         Cmd_vel = Ferrari_command()
-        self.state_update() # updates the goal
-        v, psi = self.calc_control() # calculates velocity and servo angle to get to current goal
+        self.state_update()                 # updates the goal
+        v, psi = self.calc_control()        # calculates velocity and servo angle to get to current goal
 
-        Cmd_vel.linear_velocity = int(v) # the car accepts only integer values for the velocity
-        Cmd_vel.servo = int(psi) # the car accepts only integer values for the servo angle
+        Cmd_vel.linear_velocity = int(v)    # the car accepts only integer values for the velocity
+        Cmd_vel.servo = int(psi)            # the car accepts only integer values for the servo angle
         Cmd_vel.brake = 0    
-        pub_sim.publish(Cmd_vel) # publish move command to the simulated car node
-        pub_navigator.publish(Cmd_vel) # publish move command to the navigator node of the real car
-
-    def state_update(self): # changes the goal if the car hasn't reached the last one
+        pub_sim.publish(Cmd_vel)            # publish move command to the simulated car node
+        pub_navigator.publish(Cmd_vel)      # publish move command to the navigator node of the real car
+    
+    # changes the goal if the car hasn't reached the last one
+    def state_update(self): 
         if self.reached and self.v < 0.1:
             self.reached = False
             self.index = self.index+1
-            PID_vel.clear()
-            PID_psi.clear()
+            PI_vel.clear()
+            PI_psi.clear()
             if self.index >= len(self.goal_vector):
                 pub_goal_reached.publish(True)    
                 self.run = False
@@ -110,17 +112,19 @@ class Move2Goal:
     def setActualState(self, data):
         ActualPose = Pose2D(data.x, data.y, data.theta)
         self.ActualPose = ActualPose
-        self.v = data.v
-        PID_vel.set_current(self.v) # set the current velocity for the PID controller
+        PI_vel.set_current(data.v)      # set the current velocity for the PI controller
+        PI_psi.set_current(data.psi)    # set the current steering angle for the PI controller
+        
         if (abs(ActualPose.x -  self.x_traj[-1]) > 0.001) or (abs(ActualPose.y -  self.y_traj[-1]) > 0.001):     
             self.x_traj.append(self.ActualPose.x)
             self.y_traj.append(self.ActualPose.y)
             self.theta_traj.append(self.ActualPose.theta)
-        ''' if the car position at the end of a motion is different 
-            from the expected trajectory,
+        ''' if the car position is different 
+            from the previous one (the car moved),
             appends the actual last position to the trajectory'''
-
-    def calc_control(self): # calculates the control law to get to the next goal
+   
+    # calculates the control law to get to the next goal
+    def calc_control(self): 
         x = self.ActualPose.x
         y = self.ActualPose.y
         theta = self.ActualPose.theta
@@ -136,17 +140,17 @@ class Move2Goal:
             rho = np.hypot(x_diff, y_diff) # distance from the goal
 
             if rho > self.tolerance: # if the car distance is not in the range of tolerance of the goal     
-                v, w = controller.calc_control_command(x_diff, y_diff, theta, theta_goal) # find velocity and steering wheel angle 
-                psi = np.arctan(w*self.wheelbase/abs(v))    # calculate the servo angle in rad
-                if abs(psi) > self.max_angle:               # security check for the servo angle
+                v, w = controller.calc_control_command(x_diff, y_diff, theta, theta_goal) # find velocity and angular velocity
+                psi = np.arctan(w*self.wheelbase/abs(v))    # calculate the steering angle in rad
+                if abs(psi) > self.max_angle:               # security check for the steering angle
                     psi = np.sign(psi) * self.max_angle
                 psi = psi*(180/np.pi)                       # conversion to deg                
-                cmd_psi = PID_psi.calc_control(psi)
+                cmd_psi = PI_psi.calc_control(psi)
 
                 if abs(v) > self.max_speed: #security check for the motor speed
                     v = np.sign(v) * self.max_speed
 
-                cmd_v = PID_vel.calc_control(v)
+                cmd_v = PI_vel.calc_control(v)
 
                 return cmd_v, cmd_psi
             else :
@@ -156,7 +160,7 @@ class Move2Goal:
             return 0.0, 0.0
 
     def show(self):
-            if self.show_animation: #and self.run:
+            if self.show_animation:
                 self.ax_traj.clear()
 
                 x = self.x_traj[-1]
@@ -210,7 +214,8 @@ def callback_pose(data):
 def callback_clear(data):
     if data:
         nav.clear()
-        PID_vel.clear()
+        PI_vel.clear()
+        PI_psi.clear()
 
 def callback_new_goal(data):
     nav.new_goal(data)    
@@ -252,11 +257,11 @@ if __name__ == '__main__':
 
         kp_vel = rospy.get_param("/kp_vel", 30)
         ki_vel = rospy.get_param("/ki_vel", 30)
-        PID_vel = PIDcontroller(kp_vel, ki_vel, dt, cmd_max_velocity, cmd_min_move)
+        PI_vel = PIcontroller(kp_vel, ki_vel, dt, cmd_max_velocity, cmd_min_move)
 
         kp_psi = rospy.get_param("/kp_psi", 30)
         ki_psi = rospy.get_param("/ki_psi", 30)
-        PID_psi = PIDcontroller(kp_psi, ki_psi, dt, cmd_max_angle)
+        PI_psi = PIcontroller(kp_psi, ki_psi, dt, cmd_max_angle)
     	
         fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1) # create figure and subplots for simulation
         nav = Move2Goal(tolerance, cmd_max_velocity, cmd_max_angle, max_velocity, 

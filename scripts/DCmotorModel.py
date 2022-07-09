@@ -20,9 +20,8 @@ class DC_motor:
         self.T_static = T_static
         self.T_dynamic = u_r * T_static # Dynamic torque
 
-        Beta = 0.0000001 #very small Beta
-        self.v2T = TransferFunction([kt], [ta, 1], self.dt) # gain --> kt/(1 + ta*s) in kt we consider also 1/Ra
-        self.T2w = TransferFunction([1], [J, Beta], self.dt) # feedback gain --> 1/(Beta+ J*s)
+        self.v2T = TransferFunction([kt], [ta, 1], self.dt)             # voltage on the armature to Torque --> kt/(1 + ta*s) in kt we consider also 1/Ra
+        self.T2w = TransferFunction([1/beta_viscous], [tm, 1], self.dt) # Resultant Torque to w --> 1/beta/(1 + tm*s)
         self.is_moving = False
         self.w = 0.0
 
