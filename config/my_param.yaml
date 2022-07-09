@@ -30,7 +30,7 @@ curvature: 1.4      # meters
 wheelbase: 0.38     # meters
 
 #DC motor parameters
-u_r_motor: 0.91               # dynamic friction relatic coefficient
+u_r_motor: 0.91               # dynamic friction relative coefficient
 T_load_static: 0.17           # N*m, modeled as static friction
 beta_viscous: 0.000001
 k_speed_motor: 0.045          # m/rad, gain between w and v
