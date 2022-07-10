@@ -11,17 +11,17 @@ inertia_stop_step: 15       # simulated step of the stop by inertia (driver in H
 
 # Move2Goal parameters
 tolerance: 0.2   # [m]  
-k_rho: 2         # velocity gain
+k_rho: 1.5         # velocity gain
 k_alpha: 3       # steering angle gain
 k_beta: 1        # smooth rotations
 
 # Velocity controller
 kp_vel: 1.5             # proportional gain
-ki_vel: 0.46875         # integral action
+ki_vel: 0.4             # integral action
 
 # Psi controller
-kp_psi: 1.2             # proportional gain
-ki_psi: 0.2             # integral action
+kp_psi: 1.0             # proportional gain
+ki_psi: 0.3             # integral action
 
 # Physical parameters of the car-like robot
 max_speed: 1.5      # [m/s] referred to the maximum velocity command
@@ -32,7 +32,7 @@ wheelbase: 0.38     # [m]
 #DC motor parameters
 u_r_motor: 0.915              # dynamic friction relatic coefficient
 T_load_static: 0.17           # [N*m], modeled as static friction
-beta_viscous: 0.00001         # [N*s/rad], viscous friction coefficient
+beta_viscous: 0.00009         # [N*s/rad], viscous friction coefficient
 k_speed_motor: 0.02           # [m/rad], gain between w and v
 ta_motor : 0.005              # [s], armature time constant of the DC motor
 tm_motor : 3.2                # [s], mechanical time constant of the DC motor
