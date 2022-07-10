@@ -24,7 +24,7 @@ kp_psi: 4.8             # proportional gain
 ki_psi: 1.4             # integral action
 
 # Physical parameters of the car-like robot
-max_speed: 1.5      # [m/s] 
+max_speed: 1.5      # [m/s] referred to the maximum velocity command
 max_psi: 20         # [deg]
 curvature: 1.4      # [m]
 wheelbase: 0.38     # [m]

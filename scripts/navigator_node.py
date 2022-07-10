@@ -141,7 +141,8 @@ class Move2Goal:
 
             if rho > self.tolerance: # if the car distance is not in the range of tolerance of the goal                
                 # Calculates next linear velocity and steering angle
-                v, psi = controller.calc_control_command(x_diff, y_diff, theta, theta_goal, self.wheelbase, self.max_angle, self.max_speed) 
+                v, psi = controller.calc_control_command(x_diff, y_diff, theta, theta_goal, self.wheelbase, 
+                                                                self.max_angle, self.max_speed) 
                 
                 # Calculate next steering angle
                 psi_want = PI_psi.calc_control(psi)
