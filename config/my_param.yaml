@@ -16,12 +16,12 @@ k_alpha: 6       # steering angle gain
 k_beta: 2        # smooth rotations
 
 # Velocity controller
-kp_vel: 50             # proportional gain
-ki_vel: 15             # integral action
+kp_vel: 1.5             # proportional gain
+ki_vel: 0.46875         # integral action
 
 # Psi controller
-kp_psi: 17             # proportional gain
-ki_psi: 5              # integral action
+kp_psi: 4.8             # proportional gain
+ki_psi: 1.4             # integral action
 
 # Physical parameters of the car-like robot
 max_speed: 1.5      # [m/s] 

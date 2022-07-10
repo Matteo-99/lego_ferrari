@@ -144,11 +144,12 @@ class Move2Goal:
                 v, psi = controller.calc_control_command(x_diff, y_diff, theta, theta_goal, self.wheelbase, self.max_angle, self.max_speed) 
                 
                 # Calculate next steering angle
-                cmd_psi = PI_psi.calc_control(psi)
+                psi_want = PI_psi.calc_control(psi)
+                cmd_psi = psi_want * self.cmd_max_angle/self.max_angle
                 
                 # Calculate next velocity
-                cmd_v = PI_vel.calc_control(v)
-                
+                v_want = PI_vel.calc_control(v)
+                cmd_v = v_want * self.cmd_max_linear_speed/self.max_speed
                 return cmd_v, cmd_psi
                 
             else :
@@ -255,7 +256,7 @@ if __name__ == '__main__':
 
         kp_vel = rospy.get_param("/kp_vel", 30)
         ki_vel = rospy.get_param("/ki_vel", 30)
-        PI_vel = PIcontroller(kp_vel, ki_vel, dt, cmd_max_velocity, cmd_min_move)
+        PI_vel = PIcontroller(kp_vel, ki_vel, dt, cmd_max_velocity)
 
         kp_psi = rospy.get_param("/kp_psi", 30)
         ki_psi = rospy.get_param("/ki_psi", 30)
