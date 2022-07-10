@@ -34,9 +34,12 @@ class DC_motor:
     def update(self, u):
         if self.is_moving:
             T_load = self.T_dynamic
-            
+
             Va = u*self.ka - self.kv*self.w
             Tm = self.v2T.update(Va)
+
+            if Tm < 0:      
+                T_load = 0.9 * T_load
 
             T_eff = Tm - T_load*np.sign(Tm)
             self.w = self.T2w.update(T_eff)
