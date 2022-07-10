@@ -65,16 +65,16 @@ class PathFinderController:
         v = self.Kp_rho * rho # from rho to v
         w = self.Kp_alpha * alpha - self.Kp_beta * beta # from alpha and beta to w
 
-        psi = np.arctan(w*wheelbase/abs(v)) # calculate the steering angle in rad
+        psi = np.arctan(w*wheelbase/abs(v))     # calculate the steering angle in rad
 
         if alpha > np.pi / 2 or alpha < -np.pi / 2:
             v = -v
-
-        if abs(psi) > max_angle:               # security check for the steering angle
+        
+        psi = psi*(180/np.pi)                   # conversion to deg   
+        if abs(psi) > max_angle:                # security check for the steering angle
             psi = np.sign(psi) * max_angle
-        psi = psi*(180/np.pi)                       # conversion to deg   
 
-        if abs(v) > max_speed: #security check for the motor speed
+        if abs(v) > max_speed:                  # security check for the motor speed
                 v = np.sign(v) * max_speed
 
         return v, psi

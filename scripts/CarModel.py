@@ -12,7 +12,7 @@ from lego_ferrari.msg import Ferrari_command
        
 class BicycleModel:
     def __init__(self, wheelbase, cmd_max_angle, max_psi, ta, tm, kt, k_speed, ka, kv, 
-                    T_static, u_r, beta_viscous, dt, points = 100):
+                    T_static, u_r, beta_viscous, dt, points = 1):
         self.cmd_max_angle = cmd_max_angle
         self.max_psi = max_psi
         self.points = points
@@ -53,5 +53,6 @@ class BicycleModel:
 
     # This function convert the angle of the servo motor into the real steering angle psi of the front wheels
     def servo_update(self):
-        return self.cmd.servo/self.cmd_max_angle*self.max_psi
+        psi_deg = self.cmd.servo/self.cmd_max_angle*self.max_psi
+        return np.deg2rad(psi_deg)
          

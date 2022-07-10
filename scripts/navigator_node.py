@@ -28,8 +28,8 @@ class Move2Goal:
         self.tolerance = tolerance                          # tolerance for the goal
         self.cmd_max_linear_speed = cmd_max_linear_speed    # max linear speed command accepted from the control
         self.cmd_max_angle = cmd_max_angle                  # max angle accepted from the control
-        self.max_speed = max_velocity                       # max linear speed
-        self.max_angle = max_psi                            # max steering angle
+        self.max_speed = max_velocity                       # [m/s] max linear speed
+        self.max_angle = max_psi                            # [deg] max steering angle
         self.wheelbase = wheelbase                          # distance between the two axis of wheels
         self.curvature = curvature                          # min curvature of the vehicle
 
@@ -114,7 +114,7 @@ class Move2Goal:
         self.ActualPose = ActualPose
         PI_vel.set_current(data.v)      # set the current velocity for the PI controller
         PI_psi.set_current(data.psi)    # set the current steering angle for the PI controller
-        
+        self.v = data.v
         if (abs(ActualPose.x -  self.x_traj[-1]) > 0.001) or (abs(ActualPose.y -  self.y_traj[-1]) > 0.001):     
             self.x_traj.append(self.ActualPose.x)
             self.y_traj.append(self.ActualPose.y)
@@ -137,18 +137,20 @@ class Move2Goal:
             x_diff = x_goal - x
             y_diff = y_goal - y
 
-            rho = np.hypot(x_diff, y_diff) # distance from the goal
+            rho = np.hypot(x_diff, y_diff) # distance from the goal             
 
             if rho > self.tolerance: # if the car distance is not in the range of tolerance of the goal                
                 # Calculates next linear velocity and steering angle
-                v, psi = controller.calc_control_command(x_diff, y_diff, theta, theta_goal, self.wheelbase, self.max_angle, self.max_speed) 
+                v, psi = controller.calc_control_command(x_diff, y_diff, theta, theta_goal, self.wheelbase, 
+                                                                self.max_angle, self.max_speed) 
                 
                 # Calculate next steering angle
-                cmd_psi = PI_psi.calc_control(psi)
+                psi_want = PI_psi.calc_control(psi)
+                cmd_psi = psi_want * self.cmd_max_angle/self.max_angle
                 
                 # Calculate next velocity
-                cmd_v = PI_vel.calc_control(v)
-
+                v_want = PI_vel.calc_control(v)
+                cmd_v = v_want * self.cmd_max_linear_speed/self.max_speed
                 return cmd_v, cmd_psi
                 
             else :
@@ -245,7 +247,7 @@ if __name__ == '__main__':
         wheelbase = rospy.get_param("/wheelbase", 0.37)
         curvature = 1/rospy.get_param("/curvature", 1)
         max_velocity = rospy.get_param("/max_speed", 3)
-        max_psi = np.deg2rad(rospy.get_param("/max_psi", 21))
+        max_psi = rospy.get_param("/max_psi", 21)
 
         # controller parameters
         k_rho = rospy.get_param("/k_rho", 9)
@@ -255,7 +257,7 @@ if __name__ == '__main__':
 
         kp_vel = rospy.get_param("/kp_vel", 30)
         ki_vel = rospy.get_param("/ki_vel", 30)
-        PI_vel = PIcontroller(kp_vel, ki_vel, dt, cmd_max_velocity, cmd_min_move)
+        PI_vel = PIcontroller(kp_vel, ki_vel, dt, cmd_max_velocity)
 
         kp_psi = rospy.get_param("/kp_psi", 30)
         ki_psi = rospy.get_param("/ki_psi", 30)

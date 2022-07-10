@@ -44,7 +44,7 @@ if __name__ == '__main__':
         brake_step = rospy.get_param("/inertia_stop_step", 10)
         
         #physics limit
-        max_psi = np.deg2rad(rospy.get_param("/max_psi", 21))
+        max_psi = rospy.get_param("/max_psi", 21)
         wheelbase = rospy.get_param("/wheelbase", 0.37)
         T_static = rospy.get_param("/T_load_static", 1)
         beta_viscous = rospy.get_param("/beta_viscous", 0.5)
@@ -70,7 +70,7 @@ if __name__ == '__main__':
         
         # Object that simulate the behaviour of the car
         my_car = BicycleModel(wheelbase, cmd_max_angle, max_psi, ta, tm, kt, k_speed, ka, kv, 
-                                T_static, u_r, beta_viscous, dt)
+                                T_static, u_r, beta_viscous, dt, 1000)
 
         while not rospy.is_shutdown():
             ActualState = my_car.move()        
