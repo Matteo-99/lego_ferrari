@@ -28,8 +28,8 @@ class Move2Goal:
         self.tolerance = tolerance                          # tolerance for the goal
         self.cmd_max_linear_speed = cmd_max_linear_speed    # max linear speed command accepted from the control
         self.cmd_max_angle = cmd_max_angle                  # max angle accepted from the control
-        self.max_speed = max_velocity                       # max linear speed
-        self.max_angle = max_psi                            # max steering angle
+        self.max_speed = max_velocity                       # [m/s] max linear speed
+        self.max_angle = max_psi                            # [deg] max steering angle
         self.wheelbase = wheelbase                          # distance between the two axis of wheels
         self.curvature = curvature                          # min curvature of the vehicle
 
@@ -247,7 +247,7 @@ if __name__ == '__main__':
         wheelbase = rospy.get_param("/wheelbase", 0.37)
         curvature = 1/rospy.get_param("/curvature", 1)
         max_velocity = rospy.get_param("/max_speed", 3)
-        max_psi = np.deg2rad(rospy.get_param("/max_psi", 21))
+        max_psi = rospy.get_param("/max_psi", 21)
 
         # controller parameters
         k_rho = rospy.get_param("/k_rho", 9)

@@ -69,10 +69,10 @@ class PathFinderController:
 
         if alpha > np.pi / 2 or alpha < -np.pi / 2:
             v = -v
-
+        
+        psi = psi*(180/np.pi)                   # conversion to deg   
         if abs(psi) > max_angle:                # security check for the steering angle
             psi = np.sign(psi) * max_angle
-        psi = psi*(180/np.pi)                   # conversion to deg   
 
         if abs(v) > max_speed:                  # security check for the motor speed
                 v = np.sign(v) * max_speed

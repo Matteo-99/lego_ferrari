@@ -44,7 +44,7 @@ if __name__ == '__main__':
         brake_step = rospy.get_param("/inertia_stop_step", 10)
         
         #physics limit
-        max_psi = np.deg2rad(rospy.get_param("/max_psi", 21))
+        max_psi = rospy.get_param("/max_psi", 21)
         wheelbase = rospy.get_param("/wheelbase", 0.37)
         T_static = rospy.get_param("/T_load_static", 1)
         beta_viscous = rospy.get_param("/beta_viscous", 0.5)
