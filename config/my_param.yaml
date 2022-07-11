@@ -5,7 +5,6 @@ cmd_max_turn: 20            # max angle step for the servo at each execution [de
 cmd_max_acc_step: 1         # max acceleration step at each execution
 cmd_max_dec_step: 4         # max deceleration step at each execution
 cmd_start_acc_step: 20      # initial velocity step
-cmd_min_move: 47            # minimum value of velocity for which the car starts moving
 cmd_zero_speed_tol: 3       # maximum velocity approximated to 0
 inertia_stop_step: 15       # simulated step of the stop by inertia (driver in High impedance mode)
 

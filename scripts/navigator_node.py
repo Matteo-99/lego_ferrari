@@ -241,7 +241,6 @@ if __name__ == '__main__':
         # command limits
         cmd_max_velocity = rospy.get_param("/cmd_max_velocity", 100) 
         cmd_max_angle = rospy.get_param("/cmd_max_angle", 70)
-        cmd_min_move = rospy.get_param("/cmd_min_move", 30)
         
         # physics limit
         wheelbase = rospy.get_param("/wheelbase", 0.37)
