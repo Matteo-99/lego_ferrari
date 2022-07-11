@@ -25,21 +25,20 @@ For running each sample code:
 
 # How to install
 
-1. Clone this repo.
+1. Open the catkin_ws/src directory
+
+> cd ~/catkin_ws/src
+
+2. Clone this repo.
 
 > git clone https://github.com/Matteo-99/LegoFerrari.git
 
-2. Install the required libraries.
+3. Make the lego_ferrari package
 
-using ubuntu terminal :
+> cd ~/catkin_ws
+> catkin_make
 
-> conda env create -f requirements/environment.yml
- 
-using pip :
-
-> pip install -r requirements/requirements.txt
-
-3. Install dependancy.
+3. Install the package dependancy.
 
 initialize rosdep :
 
@@ -50,22 +49,24 @@ install dependacy for the lego_ferrari package :
 
 > rosdep install lego_ferrari
 
-4. Build the workspace
+4. Re-build the catkin workspace
 
-> rosdep install lego_ferrari
+> cd ~/catkin_ws
+> catkin_make
 
 5. The installation is complete and the package is ready to be used.
 
 
 # Contents
 
-## Launch file
+## Launch files
 
 ### autonomous_ferrari.launch
+This launcher starts the /ps4_controller node to control the PS4 joystick, 
 
 ### test_simulate_car.launch
 
-## Ros node
+## Ros nodes
 
 ### joy_mux_navigation_node
 
