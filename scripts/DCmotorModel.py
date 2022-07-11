@@ -39,7 +39,7 @@ class DC_motor:
             Tm = self.v2T.update(Va)
 
             if Tm < 0:      
-                T_load = 0.9 * T_load
+                T_load = 0.95 * T_load
 
             T_eff = Tm - T_load*np.sign(Tm)
             self.w = self.T2w.update(T_eff)

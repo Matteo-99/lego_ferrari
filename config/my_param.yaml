@@ -32,7 +32,7 @@ wheelbase: 0.38     # [m]
 #DC motor parameters
 u_r_motor: 0.915              # dynamic friction relatic coefficient
 T_load_static: 0.17           # [N*m], modeled as static friction
-beta_viscous: 0.00009         # [N*s/rad], viscous friction coefficient
+beta_viscous: 0.00012         # [N*s/rad], viscous friction coefficient
 k_speed_motor: 0.02           # [m/rad], gain between w and v
 ta_motor : 0.005              # [s], armature time constant of the DC motor
 tm_motor : 3.2                # [s], mechanical time constant of the DC motor
