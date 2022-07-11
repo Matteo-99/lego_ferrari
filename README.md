@@ -36,6 +36,7 @@ For running each sample code:
 3. Make the lego_ferrari package
 
 > cd ~/catkin_ws
+
 > catkin_make
 
 3. Install the package dependancy.
@@ -52,6 +53,7 @@ install dependacy for the lego_ferrari package :
 4. Re-build the catkin workspace
 
 > cd ~/catkin_ws
+
 > catkin_make
 
 5. The installation is complete and the package is ready to be used.
@@ -61,7 +63,11 @@ install dependacy for the lego_ferrari package :
 
 ## Config files
 
-The configuration file 
+The configuration file ./config/my_param.yaml contains all the parameters used in the package like:
+- limits of the commands
+- frequency of the system
+- parameters of the simulated car and of DC motor dynamical model
+- parameters for the control algorithm
 
 ## Launch files
 
@@ -70,18 +76,18 @@ The configuration file
 This launcher starts:
 - the joy_node node to control the PS4 joystick connected as /dev/input/js2 (change if necessary).
 - the rosserial_server socket_node is used to connect the robot at port 11411 as TCP client.
-- the [joy_mux_navigation_node](#joy_mux_navigation_node) is
-- the [navigator_node](#navigator_node) that provides the control algorithm
-- the [simulated_car_node](#simulated_car_node) that provides the control algorithm
-- the [saturate_cmd_node](#saturate_cmd_node) that provides the control algorithm
+- the [joy_mux_navigation_node](#joy_mux_navigation_node) is used to switch between autonomous and manual driving
+- the [navigator_node](#navigator_node) that provides the control algorithm for navigation
+- the [simulated_car_node](#simulated_car_node) that simulates the behaviour of the car-like robot
+- the [saturate_cmd_node](#saturate_cmd_node) that saturates the command according to the chosen limits
 
 ### test_simulate_car.launch
 
 This launcher starts:
 - the rosserial_server socket_node is used to connect the robot at port 11411 as TCP client.
-- the [test_node](#test_node) that provides the control algorithm
-- the [simulated_car_node](#simulated_car_node) that provides the control algorithm
-- the [saturate_cmd_node](#saturate_cmd_node) that provides the control algorithm
+- the [test_node](#test_node) that generates the test graphical results
+- the [simulated_car_node](#simulated_car_node) that simulates the behaviour of the car-like robot
+- the [saturate_cmd_node](#saturate_cmd_node) that saturates the command according to the chosen limits
 
 ## Ros nodes
 
@@ -91,7 +97,7 @@ It selects the automatic or manual driving. Pressing “∆” on the PS4 contro
 
 ### navigator_node
 
-This node is used to navigating a car-like robot on a 2-D plane, it computes the trajectory to be travelled in order to reach the goal by means of the path planning functions.
+This node is used to navigate a car-like robot on a 2-D plane, it computes the trajectory to be travelled in order to reach the goal by means of the path planning functions.
 
 ### saturate_cmd_node
 
