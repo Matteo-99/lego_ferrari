@@ -20,12 +20,15 @@ class PathFinderController:
               to the target angle.)
     """
 
-    def __init__(self, Kp_rho, Kp_alpha, Kp_beta):
+    def __init__(self, Kp_rho, Kp_alpha, Kp_beta, wheelbase, max_angle, max_speed):
         self.Kp_rho = Kp_rho
         self.Kp_alpha = Kp_alpha
         self.Kp_beta = Kp_beta
+        self.wheelbase = wheelbase
+        self.max_angle = max_angle
+        self.max_speed = max_speed
 
-    def calc_control_command(self, x_diff, y_diff, theta, theta_goal, wheelbase, max_angle, max_speed):
+    def calc_control_command(self, x_diff, y_diff, theta, theta_goal, direction):
         """
         Returns the control command for the linear and angular velocities as
         well as the distance to goal
@@ -65,16 +68,14 @@ class PathFinderController:
         v = self.Kp_rho * rho # from rho to v
         w = self.Kp_alpha * alpha - self.Kp_beta * beta # from alpha and beta to w
 
-        psi = np.arctan(w*wheelbase/abs(v))     # calculate the steering angle in rad
-
-        if alpha > np.pi / 2 or alpha < -np.pi / 2:
-            v = -v
+        v = v*direction      
+        if abs(v) > self.max_speed:                  # security check for the motor speed
+                v = np.sign(v) * self.max_speed
         
-        psi = psi*(180/np.pi)                   # conversion to deg   
-        if abs(psi) > max_angle:                # security check for the steering angle
-            psi = np.sign(psi) * max_angle
+        psi = np.arctan(w*self.wheelbase/abs(v))     # calculate the steering angle in rad
+        psi = psi*(180/np.pi)                        # conversion to deg   
+        if abs(psi) > self.max_angle:                # security check for the steering angle
+            psi = np.sign(psi) * self.max_angle
 
-        if abs(v) > max_speed:                  # security check for the motor speed
-                v = np.sign(v) * max_speed
-
+        
         return v, psi

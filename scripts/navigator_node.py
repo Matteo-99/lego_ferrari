@@ -34,14 +34,14 @@ class Move2Goal:
         self.curvature = curvature                          # min curvature of the vehicle
 
         self.goal_vector = []
+        self.actual_dir = 0
         self.ActualGoal = Pose2D()
-        self.StartPose = Pose2D()
-        self.ActualPose = self.StartPose       
-        self.v = 0.0
+        self.StartState = State()
+        self.ActualState = self.StartState
 
-        self.x_traj = [self.ActualPose.x]
-        self.y_traj = [self.ActualPose.y]
-        self.theta_traj = [self.ActualPose.theta]
+        self.x_traj = [self.ActualState.x]
+        self.y_traj = [self.ActualState.y]
+        self.theta_traj = [self.ActualState.theta]
         
         self.reached = False
         self.dt = dt
@@ -56,23 +56,24 @@ class Move2Goal:
         self.ActualGoal.x = 0.0
         self.ActualGoal.y = 0.0
         self.ActualGoal.theta = 0.0
-        self.StartPose.x = 0.0
-        self.StartPose.y = 0.0
-        self.StartPose.theta = 0.0
-        self.ActualPose = self.StartPose
-        self.x_traj = [self.ActualPose.x]
-        self.y_traj = [self.ActualPose.y]
-        self.theta_traj = [self.ActualPose.theta]
+        self.StartState.x = 0.0
+        self.StartState.y = 0.0
+        self.StartState.theta = 0.0
+        self.StartState.v = 0.0
+        self.StartState.psi = 0.0
+        self.ActualState = self.StartState
+        self.x_traj = [self.ActualState.x]
+        self.y_traj = [self.ActualState.y]
+        self.theta_traj = [self.ActualState.theta]
         self.reached = False
         self.goal_vector = []
         self.run = False
         self.index  = 0
         self.ax_path.clear()
-        self.v = 0.0
         
     def new_goal(self, GoalPose):   
-        self.goal_vector = path_planner.planner(self.StartPose, GoalPose, self.wheelbase, 
-                                                 self.curvature, self.dt, self.ax_path, )
+        self.goal_vector = path_planner.planner(Pose2D(self.StartState.x, self.StartState.y, self.StartState.theta), 
+                                                    GoalPose, self.wheelbase, self.curvature, self.dt, self.ax_path, )
         # get goal vector
 
         if not self.goal_vector: # checks if the goal vector is been created
@@ -95,7 +96,7 @@ class Move2Goal:
     
     # changes the goal if the car hasn't reached the last one
     def state_update(self): 
-        if self.reached and self.v < 0.1:
+        if self.reached and self.ActualState.v < 0.1:
             self.reached = False
             self.index = self.index+1
             PI_vel.clear()
@@ -107,27 +108,26 @@ class Move2Goal:
             goal = self.goal_vector[self.index] # get the next goal
             self.ActualGoal.x = goal[0]
             self.ActualGoal.y = goal[1]
-            self.ActualGoal.theta = goal[2]      
+            self.ActualGoal.theta = goal[2] 
+            self.actual_dir = goal[3]     
 
     def setActualState(self, data):
-        ActualPose = Pose2D(data.x, data.y, data.theta)
-        self.ActualPose = ActualPose
+        self.ActualState = data
         PI_vel.set_current(data.v)      # set the current velocity for the PI controller
         PI_psi.set_current(data.psi)    # set the current steering angle for the PI controller
-        self.v = data.v
-        if (abs(ActualPose.x -  self.x_traj[-1]) > 0.001) or (abs(ActualPose.y -  self.y_traj[-1]) > 0.001):     
-            self.x_traj.append(self.ActualPose.x)
-            self.y_traj.append(self.ActualPose.y)
-            self.theta_traj.append(self.ActualPose.theta)
+        if (abs(self.ActualState.x -  self.x_traj[-1]) > 0.001) or (abs(self.ActualState.y -  self.y_traj[-1]) > 0.001):     
+            self.x_traj.append(self.ActualState.x)
+            self.y_traj.append(self.ActualState.y)
+            self.theta_traj.append(self.ActualState.theta)
         ''' if the car position is different 
             from the previous one (the car moved),
             appends the actual last position to the trajectory'''
    
     # calculates the control law to get to the next goal
     def calc_control(self): 
-        x = self.ActualPose.x
-        y = self.ActualPose.y
-        theta = self.ActualPose.theta
+        x = self.ActualState.x
+        y = self.ActualState.y
+        theta = self.ActualState.theta
         
         x_goal = self.ActualGoal.x
         y_goal = self.ActualGoal.y
@@ -141,8 +141,7 @@ class Move2Goal:
 
             if rho > self.tolerance: # if the car distance is not in the range of tolerance of the goal                
                 # Calculates next linear velocity and steering angle
-                v, psi = controller.calc_control_command(x_diff, y_diff, theta, theta_goal, self.wheelbase, 
-                                                                self.max_angle, self.max_speed) 
+                v, psi = controller.calc_control_command(x_diff, y_diff, theta, theta_goal, self.actual_dir) 
                 
                 # Calculate next steering angle
                 psi_want = PI_psi.calc_control(psi)
@@ -177,9 +176,9 @@ class Move2Goal:
                 p2 = np.matmul(T, p2_i)
                 p3 = np.matmul(T, p3_i)
 
-                self.ax_traj.arrow(self.StartPose.x, self.StartPose.y, 
-                        self.wheelbase * np.cos(self.StartPose.theta),
-                        self.wheelbase * np.sin(self.StartPose.theta), fc='r',
+                self.ax_traj.arrow(self.StartState.x, self.StartState.y, 
+                        self.wheelbase * np.cos(self.StartState.theta),
+                        self.wheelbase * np.sin(self.StartState.theta), fc='r',
                         head_width=0.5*self.wheelbase, 
                         head_length=0.5*self.wheelbase, length_includes_head = True)
                 self.ax_traj.arrow(self.ActualGoal.x, self.ActualGoal.y, 
@@ -252,7 +251,7 @@ if __name__ == '__main__':
         k_rho = rospy.get_param("/k_rho", 9)
         k_alpha = rospy.get_param("/k_alpha", 15)
         k_beta = rospy.get_param("/k_beta", 3)
-        controller = PathFinderController(k_rho, k_alpha, k_beta)
+        controller = PathFinderController(k_rho, k_alpha, k_beta, wheelbase, max_psi, max_velocity)
 
         kp_vel = rospy.get_param("/kp_vel", 30)
         ki_vel = rospy.get_param("/ki_vel", 30)
