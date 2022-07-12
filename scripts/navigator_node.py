@@ -255,11 +255,11 @@ if __name__ == '__main__':
 
         kp_vel = rospy.get_param("/kp_vel", 30)
         ki_vel = rospy.get_param("/ki_vel", 30)
-        PI_vel = PIcontroller(kp_vel, ki_vel, dt, cmd_max_velocity)
+        PI_vel = PIcontroller(kp_vel, ki_vel, dt, max_velocity)
 
         kp_psi = rospy.get_param("/kp_psi", 30)
         ki_psi = rospy.get_param("/ki_psi", 30)
-        PI_psi = PIcontroller(kp_psi, ki_psi, dt, cmd_max_angle)
+        PI_psi = PIcontroller(kp_psi, ki_psi, dt, max_psi)
     	
         fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1) # create figure and subplots for simulation
         nav = Move2Goal(tolerance, cmd_max_velocity, cmd_max_angle, max_velocity, 

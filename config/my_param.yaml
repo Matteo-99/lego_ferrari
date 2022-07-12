@@ -10,9 +10,9 @@ inertia_stop_step: 15       # simulated step of the stop by inertia (driver in H
 
 # Move2Goal parameters
 tolerance: 0.2   # [m]  
-k_rho: 1.5         # velocity gain
-k_alpha: 3       # steering angle gain
-k_beta: 1        # smooth rotations
+k_rho: 1.0       # velocity gain
+k_alpha: 2.2     # steering angle gain
+k_beta: 0.9      # smooth rotations
 
 # Velocity controller
 kp_vel: 1.5             # proportional gain
@@ -20,7 +20,7 @@ ki_vel: 0.4             # integral action
 
 # Psi controller
 kp_psi: 1.0             # proportional gain
-ki_psi: 0.3             # integral action
+ki_psi: 0.2             # integral action
 
 # Physical parameters of the car-like robot
 max_speed: 1.5      # [m/s] referred to the maximum velocity command

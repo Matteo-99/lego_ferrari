@@ -65,8 +65,8 @@ class PathFinderController:
         alpha = (np.arctan2(y_diff, x_diff)
                  - theta + np.pi) % (2 * np.pi) - np.pi
         beta = (theta_goal - theta - alpha + np.pi) % (2 * np.pi) - np.pi
-        v = self.Kp_rho * rho # from rho to v
-        w = self.Kp_alpha * alpha - self.Kp_beta * beta # from alpha and beta to w
+        v = self.Kp_rho * rho                                   # from rho to v
+        w = self.Kp_alpha * alpha - self.Kp_beta * beta         # from alpha and beta to w
 
         v = v*direction      
         if abs(v) > self.max_speed:                  # security check for the motor speed
