@@ -1,4 +1,4 @@
-# LegoFerrari
+# lego_ferrari
 
 ROS package for control the parking maneuvers of an autonomous car-like-problem.
 
@@ -31,7 +31,7 @@ For running each sample code:
 
 2. Clone this repo.
 
-> git clone https://github.com/Matteo-99/LegoFerrari.git
+> git clone https://github.com/Matteo-99/lego_ferrari.git
 
 3. Make the lego_ferrari package
 
