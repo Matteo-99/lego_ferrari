@@ -44,6 +44,7 @@ For running each sample code:
 initialize rosdep :
 
 > sudo rosdep init
+
 > rosdep update
 
 install dependacy for the lego_ferrari package :
