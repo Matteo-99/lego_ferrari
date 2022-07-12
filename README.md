@@ -1,8 +1,11 @@
 # lego_ferrari
 
-ROS package for control the parking maneuvers of an autonomous car-like-problem.
+ROS package containing a navigation system of an autonomous car-like robot. 
+The aim of this package is focused on the parking problem maneuvers on a 2D plane.
+No obstacles are considered and no position sensors are required.
+The package has been tested on a real prototype equipped as previously described.
 
-Features:
+Main Features:
 
 1. Manual driving of a car-like robot throught wifi connection and a joystick
 
@@ -15,7 +18,7 @@ Features:
 
 For running each sample code:
 
-- [Python 3.10.x](https://www.python.org/)
+- [Python 3.x](https://www.python.org/)
 - [NumPy](https://numpy.org/)
 - [SciPy](https://scipy.org/)
 - [Matplotlib](https://matplotlib.org/)
@@ -102,7 +105,7 @@ This node is used to navigate a car-like robot on a 2-D plane, it computes the t
 
 ### saturate_cmd_node
 
-It saturated the output command values to their maximum and minimum values, also in terms of accelerations.
+It saturates the command values to their maximum and minimum values, also in terms of accelerations.
 
 ### simulated_car_node
 
@@ -110,7 +113,7 @@ This node simulates the behavior of a car-like robot through a properly adapted 
 
 ### test_node
 
-The test_node provide all the functions to properly test and evaluate the parameter of the simulated car.
+The test_node provides all the functions to properly test and evaluate the parameter of the simulated car.
 
 # Authors
 
