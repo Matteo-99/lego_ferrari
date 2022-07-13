@@ -351,23 +351,22 @@ def reeds_shepp_path_planning(sx, sy, syaw, gx, gy, gyaw, maxc, step_size=0.2):
     return b_path.x, b_path.y, b_path.yaw, b_path.ctypes, b_path.lengths, b_path.directions
 
 def find_goals(x,y,theta,directions):
-    vect = []
+    vect_goal = []
     for i in range(2, len(directions)):
         if directions[i] != directions[i-1]:
-            vect.append([x[i], y[i], theta[i]])      
-    vect.append([x[-1], y[-1], theta[-1]])     
+            vect_goal.append([x[i-1], y[i-1], theta[i-1], directions[i-1]]) 
+    vect_goal.append([x[-1], y[-1], theta[-1], directions[-1]])     
       
-    return vect
+    return vect_goal
 
 
 def planner(StartPose, FinalPose, wheelbase, curvature, step_size, ax):
     print("Reeds Shepp path planner sample start!!")
 
-    xs, ys, yaws, modes, lengths, directions = reeds_shepp_path_planning(StartPose.x, StartPose.y,
+    xs, ys, yaws, modes, _, directions = reeds_shepp_path_planning(StartPose.x, StartPose.y,
                                                              StartPose.theta, FinalPose.x,
                                                              FinalPose.y, FinalPose.theta,
-                                                             curvature, step_size)
-                                                             
+                                                             curvature, step_size)                                                   
         
     if not xs:
         # assert False, "No path"
