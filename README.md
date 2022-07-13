@@ -119,8 +119,8 @@ The test_node provides all the functions to properly test and evaluate the param
 
 - [Matteo Sperti](https://github.com/Matteo-99)
 - [Morgan Casale](https://github.com/morgancasale)
-- Federico Moscato
-- Francesco Stolcis
+- [Federico Moscato](https://github.com/JMFede)
+- [Francesco Stolcis](https://github.com/FraStolcis)
 - Paolo Timis
 
 # References
