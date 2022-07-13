@@ -12,6 +12,10 @@ decelerating, starting to move or stopping by inertia
 from lego_ferrari.msg import Ferrari_command
 
 class CmdSaturation:
+    """
+    Constructs an instantiate of the CmdSaturation for saturating the Ferrari_command (and its derivatives)
+    """
+
     def __init__(self, max_velocity, max_acc_step, start_acc_step, max_dec_step, 
                     cmd_zero_tol, brake_step, max_angle, max_turn):
         self.cmd = Ferrari_command()
@@ -29,10 +33,16 @@ class CmdSaturation:
         self.cmd.linear_velocity = 0
         self.cmd.servo = 0
 
-    def get_cmd(self):
-        return self.cmd
-
     def update_cmd(self, cmd_received):
+        """
+        Returns the current Ferrari_command after the saturation process
+        Arguments
+        ----------
+        cmd_received : Target command 
+        Returns
+        -------
+        cmd : Current command
+        """
         if cmd_received.brake:
             # stopping by inertia
             self.cmd.brake = 1

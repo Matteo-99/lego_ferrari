@@ -30,8 +30,7 @@ class PathFinderController:
 
     def calc_control_command(self, x_diff, y_diff, theta, theta_goal, direction):
         """
-        Returns the control command for the linear and angular velocities as
-        well as the distance to goal
+        Returns the control command for the linear and angular velocities
         Parameters
         ----------
         x_diff : The position of target with respect to current robot position
@@ -43,8 +42,8 @@ class PathFinderController:
         Returns
         -------
         rho : The distance between the robot and the goal position
-        v : Command linear velocity
-        w : Command angle of the sterring wheel
+        v : Linear velocity
+        psi : Steering angle of the sterring wheel
         """
 
         # Description of local variables:

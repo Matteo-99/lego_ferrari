@@ -7,6 +7,15 @@ PI Controller model.
 import numpy as np
 
 class PIcontroller:
+    """
+    Constructs an instantiate of the PIcontroller
+    Parameters
+    ----------
+    Kp : Proportional gain of the controller
+    Ki : Integral gain of the controller
+    dt : Integration step
+    max : Maximum absolute value of the output
+    """
     def __init__(self, kp, ki, dt, max = 100000):
         self.dt = dt
         self.kp = kp

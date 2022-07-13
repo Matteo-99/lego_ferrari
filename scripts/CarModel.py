@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """ 
-In order to model this custom car-like robot the classical bycicle model has been properly adapted.
+In order to model this custom car-like robot the classical bicycle model has been properly adapted.
  """
 
 import numpy as np
@@ -11,6 +11,11 @@ from geometry_msgs.msg import Pose2D
 from lego_ferrari.msg import Ferrari_command
        
 class BicycleModel:
+    """
+    Constructs an instantiate of the BicycleModel for simulating a
+    car-like robot on a 2D plane
+    """
+
     def __init__(self, wheelbase, cmd_max_angle, max_psi, ta, tm, kt, k_speed, ka, kv, 
                     T_static, u_r, beta_viscous, dt, points = 1):
         self.cmd_max_angle = cmd_max_angle
@@ -23,7 +28,10 @@ class BicycleModel:
         self.motor = DC_motor(ta, tm, kt, k_speed, ka, kv, T_static, u_r, beta_viscous, self.dt)
 
     # Bycicle model    
-    def move(self):  
+    def move(self):
+        """
+        Return the current state (pose, velocity, steering angle) of the robots after updating it
+        """  
         for _ in range(self.points):
             psi = self.servo_update()
             
