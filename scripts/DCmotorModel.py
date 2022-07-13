@@ -21,9 +21,11 @@ class DC_motor:
         self.beta_viscous = beta_viscous
         self.T_static = T_static                # Static torque
         self.T_dynamic = u_r * T_static         # Dynamic torque
-
-        self.v2T = TransferFunction([kt], [ta, 1], self.dt)             # voltage on the armature to Torque --> kt/(1 + ta*s) in kt we consider also 1/Ra
-        self.T2w = TransferFunction([1/beta_viscous], [tm, 1], self.dt) # Resultant Torque to w --> 1/beta/(1 + tm*s)
+        
+        # voltage on the armature to Torque Transfer function--> kt/(1 + ta*s) in kt we consider also 1/Ra
+        self.v2T = TransferFunction([kt], [ta, 1], self.dt)  
+        # Resultant Torque to w Transfer function--> 1/beta/(1 + tm*s)           
+        self.T2w = TransferFunction([1/beta_viscous], [tm, 1], self.dt) 
 
         self.is_moving = False
         self.w = 0.0

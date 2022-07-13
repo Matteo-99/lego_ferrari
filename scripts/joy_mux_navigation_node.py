@@ -99,11 +99,13 @@ def goal_reached(data):
     global autonomous_drive
     
     if data.data and autonomous_drive:
-        print('Arrived at x: ' + repr(goal_pose.x) + ', y: ' + repr(goal_pose.y) + ', theta: ' + repr(goal_pose.theta) + '\nBack to Manual Guide \n')
+        print('Arrived at x: ' + repr(goal_pose.x) + ', y: ' + repr(goal_pose.y) + 
+                ', theta: ' + repr(goal_pose.theta) + '\nBack to Manual Guide \n')
         autonomous_drive = False
         #pub_stopNav.publish(True)
     if autonomous_drive and not data.data:
-        print('Failed to arrived at x: ' + repr(goal_pose.x) + ', y: ' + repr(goal_pose.y) + ', theta: ' + repr(goal_pose.theta) + '\nNO PATH FOUNDED\nBack to Manual Guide \n')
+        print('Failed to arrived at x: ' + repr(goal_pose.x) + ', y: ' + repr(goal_pose.y) + 
+                ', theta: ' + repr(goal_pose.theta) + '\nNO PATH FOUNDED\nBack to Manual Guide \n')
         autonomous_drive = False
         pub_stopNav.publish(True)
 
