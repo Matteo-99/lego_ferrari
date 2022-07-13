@@ -12,7 +12,7 @@ inertia_stop_step: 15       # simulated step of the stop by inertia (driver in H
 tolerance: 0.2   # [m]  
 k_rho: 1.0       # velocity gain
 k_alpha: 2.2     # steering angle gain
-k_beta: 0.9       # smooth rotations
+k_beta: 0.9      # smooth rotations
 
 # Velocity controller
 kp_vel: 1.5             # proportional gain
@@ -24,7 +24,7 @@ ki_psi: 0.3             # integral action
 
 # Physical parameters of the car-like robot
 max_speed: 1.5      # [m/s] referred to the maximum velocity command
-max_psi: 19.9        # [deg]
+max_psi: 19.9       # [deg]
 curvature: 1.4      # [m]
 wheelbase: 0.38     # [m]
 
