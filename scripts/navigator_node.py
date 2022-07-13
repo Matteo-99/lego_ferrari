@@ -67,9 +67,10 @@ class Move2Goal:
         self.theta_traj = [self.ActualState.theta]
         self.reached = False
         self.goal_vector = []
-        self.run = False
-        self.index  = 0
+        self.run = False        
         self.ax_path.clear()
+        self.tolerance = self.tolerance /pow(2.2, self.index)
+        self.index  = 0
         
     def new_goal(self, GoalPose):   
         self.goal_vector = path_planner.planner(Pose2D(self.StartState.x, self.StartState.y, self.StartState.theta), 
@@ -101,6 +102,8 @@ class Move2Goal:
             self.index = self.index+1
             PI_vel.clear()
             PI_psi.clear()
+            self.tolerance = 2.2 * self.tolerance
+            print(self.tolerance)
             if self.index >= len(self.goal_vector):
                 pub_goal_reached.publish(True)    
                 self.run = False

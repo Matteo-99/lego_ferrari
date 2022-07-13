@@ -9,8 +9,8 @@ cmd_zero_speed_tol: 3       # maximum velocity approximated to 0
 inertia_stop_step: 15       # simulated step of the stop by inertia (driver in High impedance mode)
 
 # Move2Goal parameters
-tolerance: 0.06   # [m]  
-k_rho: 1.112       # velocity gain
+tolerance: 0.2   # [m]  
+k_rho: 1.0       # velocity gain
 k_alpha: 2.2     # steering angle gain
 k_beta: 0.9       # smooth rotations
 
@@ -24,8 +24,8 @@ ki_psi: 0.3             # integral action
 
 # Physical parameters of the car-like robot
 max_speed: 1.5      # [m/s] referred to the maximum velocity command
-max_psi: 19.8        # [deg]
-curvature: 1.1      # [m]
+max_psi: 19.9        # [deg]
+curvature: 1.4      # [m]
 wheelbase: 0.38     # [m]
 
 #DC motor parameters
