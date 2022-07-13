@@ -36,15 +36,9 @@ For running each sample code:
 
 > git clone https://github.com/Matteo-99/lego_ferrari.git
 
-3. Make the lego_ferrari package
-
-> cd ~/catkin_ws
-
-> catkin_make
-
 3. Install the package dependancy.
 
-initialize rosdep :
+initialize rosdep (if not already initialized):
 
 > sudo rosdep init
 
@@ -54,7 +48,7 @@ install dependacy for the lego_ferrari package :
 
 > rosdep install lego_ferrari
 
-4. Re-build the catkin workspace
+4. Make the lego_ferrari package
 
 > cd ~/catkin_ws
 
