@@ -72,7 +72,7 @@ The configuration file ./config/my_param.yaml contains all the parameters used i
 ### autonomous_ferrari.launch
 
 This launcher starts:
-- the joy_node node to control the PS4 joystick connected as /dev/input/js2 (change if necessary). If it is not possible to use a joystick in order to start an autonomous drive publish the folliwing message:
+- the joy_node node to control the PS4 joystick connected as /dev/input/js2 (change if necessary). If it is not possible to use a joystick, in order to start an autonomous drive, publish the following message:
 
 > rostopic pub /joy sensor_msgs/Joy '{ header: {}, axes: [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0], buttons: [0, 0, 1, 0, 0, 0, 0, 0]}'
 
