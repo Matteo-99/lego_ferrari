@@ -1,4 +1,4 @@
-# lego_ferrari
+# simpleAutonomousDriving
 
 ROS package containing a navigation system of an autonomous car-like robot. 
 The aim of this package is focused on the parking problem maneuvers on a 2D plane.
